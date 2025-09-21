@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+</head>
+<body>
+    <h1>Prediction Results</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% if similar_food %}
+            <p>혹시 "{{ similar_food }}"을(를) 찾으셨나요?</p>
+        {% endif %}
+    {% else %}
+        <p>예상 혈당 (공식 사용): {{ predicted_blood_sugar_formula_total }} mg/dL</p>
+        <p>예상 혈당 (신경망 모델 사용): {{ predicted_blood_sugar_model_total }} mg/dL</p>
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Prediction Plot">
+        <br>
+        <a href="{{ url_for('index') }}">다시 시도하기</a>
+    {% endif %}
+</body>
+</html>

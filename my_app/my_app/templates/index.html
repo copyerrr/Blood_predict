@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>혈당 예측기</title>
+</head>
+<body>
+    <h1>혈당 예측기</h1>
+    <form action="/predict" method="post">
+        <label for="current_blood_sugar">현재 혈당 (mg/dL):</label>
+        <input type="number" step="0.1" id="current_blood_sugar" name="current_blood_sugar" required><br><br>
+
+        <label for="food_name">음식 이름:</label>
+        <input type="text" id="food_name" name="food_name" required><br><br>
+
+        <label for="carbohydrate_amount">섭취한 양 (g):</label>
+        <input type="number" step="0.1" id="carbohydrate_amount" name="carbohydrate_amount" required><br><br>
+
+        <label>당뇨병 여부:</label>
+        <input type="radio" id="yes" name="diabetic_status" value="yes">
+        <label for="yes">예</label>
+        <input type="radio" id="no" name="diabetic_status" value="no">
+        <label for="no">아니오</label><br><br>
+
+        <input type="submit" value="예측하기">
+    </form>
+
+    {% if prediction_ready %}
+        <h2>예측 결과</h2>
+        <p>예상 혈당 (공식 사용): {{ predicted_blood_sugar_formula_total }} mg/dL</p>
+        <p>예상 혈당 (신경망 모델 사용): {{ predicted_blood_sugar_model_total }} mg/dL</p>
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Prediction Plot">
+        <br>
+        <form action="/update_model" method="post">
+            <input type="hidden" name="food_name" value="{{ food_name }}">
+            <input type="hidden" name="carbohydrate_amount" value="{{ carbohydrate_amount }}">
+            <input type="hidden" name="current_blood_sugar" value="{{ current_blood_sugar }}">
+            <label for="actual_blood_sugar">음식 섭취 후 실제 혈당 (mg/dL):</label>
+            <input type="number" step="0.1" id="actual_blood_sugar" name="actual_blood_sugar" required><br><br>
+            <input type="submit" name="action" value="학습하기">
+            <a href="{{ url_for('index') }}">돌아가기</a>
+        </form>
+    {% endif %}
+</body>
+</html>
